@@ -1,11 +1,22 @@
-import { useState } from "react";
 import styles from "./ResizeSettings.module.css";
 
-export default function ResizeSettings() {
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
-  const [autoScale, setAutoScale] = useState(true);
+interface ResizeSettingsProps {
+  width: string;
+  setWidth: (value: string) => void;
+  height: string;
+  setHeight: (value: string) => void;
+  autoScale: boolean;
+  setAutoScale: (value: boolean) => void;
+}
 
+export default function ResizeSettings({
+  width,
+  setWidth,
+  height,
+  setHeight,
+  autoScale,
+  setAutoScale,
+}: ResizeSettingsProps) {
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>Resize Settings</h3>

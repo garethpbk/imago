@@ -25,3 +25,7 @@ func (a *App) startup(ctx context.Context) {
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
+
+func (a *App) ResizeImages(height string, width string) string {
+	return fmt.Sprintf("Resized to %s x %s", height, width)
+}

@@ -1,10 +1,20 @@
 import { useState } from "react";
 import styles from "./ImageUpload.module.css";
 
-export default function ImageUpload() {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+interface ImageUploadProps {
+  selectedFiles: File[];
+  setSelectedFiles: (files: File[]) => void;
+  addedUrls: string[];
+  setAddedUrls: (urls: string[] | ((prev: string[]) => string[])) => void;
+}
+
+export default function ImageUpload({
+  selectedFiles,
+  setSelectedFiles,
+  addedUrls,
+  setAddedUrls,
+}: ImageUploadProps) {
   const [urlInput, setUrlInput] = useState("");
-  const [addedUrls, setAddedUrls] = useState<string[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
