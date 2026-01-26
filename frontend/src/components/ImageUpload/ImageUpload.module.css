@@ -1,0 +1,149 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.uploadContainer {
+    border: 2px dashed steelblue;
+    border-radius: 8px;
+    width: 400px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.uploadContainer:hover {
+    border-color: #4682b4;
+    background-color: #e8f4fd;
+}
+
+.fileInput {
+    display: none;
+}
+
+.uploadLabel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.uploadContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.uploadIcon {
+    font-size: 48px;
+}
+
+.uploadText {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+.uploadHint {
+    font-size: 14px;
+    color: #666;
+}
+
+.urlSection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.urlInputContainer {
+    display: flex;
+    gap: 8px;
+    width: 400px;
+}
+
+.urlField {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.urlField:focus {
+    outline: none;
+    border-color: steelblue;
+    box-shadow: 0 0 0 2px rgba(70, 130, 180, 0.1);
+}
+
+.urlButton {
+    padding: 10px 20px;
+    background-color: steelblue;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.urlButton:hover {
+    background-color: #4682b4;
+}
+
+.urlButton:active {
+    background-color: #36648b;
+}
+
+.urlList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.urlItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+
+.urlText {
+    font-size: 14px;
+    color: #333;
+    word-break: break-all;
+    flex: 1;
+    margin-right: 12px;
+}
+
+.removeButton {
+    padding: 6px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.removeButton:hover {
+    background-color: #c82333;
+}
+
+.removeButton:active {
+    background-color: #bd2130;
+}
