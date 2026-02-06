@@ -22,6 +22,12 @@
     background-color: #e8f4fd;
 }
 
+.uploadContainer.dragging {
+    border-color: #4682b4;
+    background-color: #d4ebf7;
+    border-style: solid;
+}
+
 .fileInput {
     display: none;
 }

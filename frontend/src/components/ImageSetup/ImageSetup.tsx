@@ -26,8 +26,6 @@ async function convertToBase64({ files }: { files: File[] }) {
 
   const base64Images = await Promise.all(filePromises);
 
-  console.log({ base64Images });
-
   return base64Images;
 }
 

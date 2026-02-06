@@ -15,10 +15,37 @@ export default function ImageUpload({
   setAddedUrls,
 }: ImageUploadProps) {
   const [urlInput, setUrlInput] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setSelectedFiles(Array.from(e.target.files));
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/")
+    );
+
+    if (files.length > 0) {
+      setSelectedFiles(files);
     }
   };
 
@@ -35,7 +62,14 @@ export default function ImageUpload({
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.uploadContainer}>
+      <div
+        className={`${styles.uploadContainer} ${
+          isDragging ? styles.dragging : ""
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         <input
           type="file"
           accept="image/*"
