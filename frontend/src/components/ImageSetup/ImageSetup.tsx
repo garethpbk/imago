@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import ImageUpload from "../ImageUpload/ImageUpload";
 import ResizeSettings from "../ResizeSettings/ResizeSettings";
 import styles from "./ImageSetup.module.css";
@@ -39,31 +39,46 @@ interface PreviewImage {
 export default function ImageSetup() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [addedUrls, setAddedUrls] = useState<string[]>([]);
-  const [, forceUpdate] = useState({});
+  const [previewImages, setPreviewImages] = useState<PreviewImage[]>([]);
 
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
   const [autoScale, setAutoScale] = useState(true);
 
-  const previewImages = useMemo<PreviewImage[]>(() => {
-    return selectedFiles.map((file) => {
-      const url = URL.createObjectURL(file);
-      const preview: PreviewImage = {
-        url,
-        name: file.name,
-      };
+  // Load images and their dimensions when files change
+  useEffect(() => {
+    // Create preview objects with URLs
+    const previews: PreviewImage[] = selectedFiles.map((file) => ({
+      url: URL.createObjectURL(file),
+      name: file.name,
+    }));
 
-      // Load dimensions asynchronously and trigger re-render when done
-      const img = new Image();
-      img.onload = () => {
-        preview.width = img.width;
-        preview.height = img.height;
-        forceUpdate({});
-      };
-      img.src = url;
+    setPreviewImages(previews);
 
-      return preview;
+    // Load dimensions asynchronously
+    const loadPromises = previews.map((preview, index) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          // Update the preview with dimensions
+          setPreviewImages((prev) =>
+            prev.map((p, i) =>
+              i === index ? { ...p, width: img.width, height: img.height } : p
+            )
+          );
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = preview.url;
+      });
     });
+
+    Promise.all(loadPromises);
+
+    // Cleanup: revoke object URLs when component unmounts or files change
+    return () => {
+      previews.forEach((preview) => URL.revokeObjectURL(preview.url));
+    };
   }, [selectedFiles]);
 
   const handleResizeImages = async () => {
@@ -83,6 +98,11 @@ export default function ImageSetup() {
       console.error("Error resizing images:", error);
       alert(`Error: ${error}`);
     }
+  };
+
+  const handleClearImages = () => {
+    setSelectedFiles([]);
+    setPreviewImages([]);
   };
 
   return (
@@ -116,7 +136,12 @@ export default function ImageSetup() {
 
       {previewImages.length > 0 && (
         <div className={styles.previewSection}>
-          <h3 className={styles.previewTitle}>Uploaded Images</h3>
+          <div className={styles.previewHeader}>
+            <h3 className={styles.previewTitle}>Uploaded Images</h3>
+            <button onClick={handleClearImages} className={styles.clearButton}>
+              Clear all
+            </button>
+          </div>
           <div className={styles.previewGrid}>
             {previewImages.map((preview, index) => (
               <div key={preview.url} className={styles.previewItem}>

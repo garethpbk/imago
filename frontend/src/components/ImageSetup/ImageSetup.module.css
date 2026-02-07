@@ -47,11 +47,39 @@
     width: 100%;
 }
 
+.previewHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 32px;
+}
+
 .previewTitle {
     font-size: 18px;
     font-weight: 600;
     color: white;
-    margin-bottom: 16px;
+    margin: 0;
+}
+
+.clearButton {
+    padding: 8px 16px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clearButton:hover {
+    background-color: #c82333;
+}
+
+.clearButton:active {
+    background-color: #bd2130;
 }
 
 .previewGrid {
