@@ -20,6 +20,8 @@ export default function ImageUpload({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setSelectedFiles(Array.from(e.target.files));
+      // Clear URLs when files are selected
+      setAddedUrls([]);
     }
   };
 
@@ -46,6 +48,8 @@ export default function ImageUpload({
 
     if (files.length > 0) {
       setSelectedFiles(files);
+      // Clear URLs when files are dropped
+      setAddedUrls([]);
     }
   };
 
@@ -53,22 +57,23 @@ export default function ImageUpload({
     if (urlInput.trim()) {
       setAddedUrls((prev) => [...prev, urlInput.trim()]);
       setUrlInput("");
+      // Clear files when URL is added
+      setSelectedFiles([]);
     }
   };
 
-  const handleRemoveUrl = (indexToRemove: number) => {
-    setAddedUrls(addedUrls.filter((_, index) => index !== indexToRemove));
-  };
+  const hasUrls = addedUrls.length > 0;
+  const hasFiles = selectedFiles.length > 0;
 
   return (
     <div className={styles.wrapper}>
       <div
         className={`${styles.uploadContainer} ${
           isDragging ? styles.dragging : ""
-        }`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        } ${hasUrls ? styles.disabled : ""}`}
+        onDragOver={hasUrls ? undefined : handleDragOver}
+        onDragLeave={hasUrls ? undefined : handleDragLeave}
+        onDrop={hasUrls ? undefined : handleDrop}
       >
         <input
           type="file"
@@ -77,16 +82,24 @@ export default function ImageUpload({
           onChange={handleFileChange}
           className={styles.fileInput}
           id="fileUpload"
+          disabled={hasUrls}
         />
-        <label htmlFor="fileUpload" className={styles.uploadLabel}>
+        <label
+          htmlFor="fileUpload"
+          className={`${styles.uploadLabel} ${hasUrls ? styles.disabled : ""}`}
+        >
           <div className={styles.uploadContent}>
             <span className={styles.uploadIcon}>📁</span>
             <span className={styles.uploadText}>
               {selectedFiles.length > 0
                 ? `${selectedFiles.length} image(s) selected`
-                : "Click to upload images"}
+                : hasUrls
+                  ? "File upload disabled (using URLs)"
+                  : "Click to upload images"}
             </span>
-            <span className={styles.uploadHint}>or drag and drop</span>
+            {!hasUrls && (
+              <span className={styles.uploadHint}>or drag and drop</span>
+            )}
           </div>
         </label>
       </div>
@@ -95,32 +108,26 @@ export default function ImageUpload({
         <div className={styles.urlInputContainer}>
           <input
             type="url"
-            placeholder="Or paste image URL here"
+            placeholder={
+              hasFiles
+                ? "URL input disabled (using files)"
+                : "Or paste image URL here"
+            }
             className={styles.urlField}
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleUrlSubmit()}
+            disabled={hasFiles}
           />
-          <button onClick={handleUrlSubmit} className={styles.urlButton}>
+          <button
+            onClick={handleUrlSubmit}
+            className={styles.urlButton}
+            disabled={hasFiles}
+          >
             Add URL
           </button>
         </div>
 
-        {addedUrls.length > 0 && (
-          <div className={styles.urlList}>
-            {addedUrls.map((url, index) => (
-              <div key={index} className={styles.urlItem}>
-                <span className={styles.urlText}>{url}</span>
-                <button
-                  onClick={() => handleRemoveUrl(index)}
-                  className={styles.removeButton}
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

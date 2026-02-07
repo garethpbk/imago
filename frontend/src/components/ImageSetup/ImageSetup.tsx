@@ -45,18 +45,30 @@ export default function ImageSetup() {
   const [height, setHeight] = useState("");
   const [autoScale, setAutoScale] = useState(true);
 
-  // Load images and their dimensions when files change
+  // Load images and their dimensions when files or URLs change
   useEffect(() => {
-    // Create preview objects with URLs
-    const previews: PreviewImage[] = selectedFiles.map((file) => ({
+    // Create preview objects from files
+    const filePreviews: PreviewImage[] = selectedFiles.map((file) => ({
       url: URL.createObjectURL(file),
       name: file.name,
     }));
 
-    setPreviewImages(previews);
+    // Create preview objects from URLs
+    const urlPreviews: PreviewImage[] = addedUrls.map((url) => {
+      // Extract filename from URL or use URL as name
+      const urlObj = new URL(url);
+      const filename = urlObj.pathname.split("/").pop() || url;
+      return {
+        url,
+        name: filename,
+      };
+    });
+
+    const allPreviews = [...filePreviews, ...urlPreviews];
+    setPreviewImages(allPreviews);
 
     // Load dimensions asynchronously
-    const loadPromises = previews.map((preview, index) => {
+    const loadPromises = allPreviews.map((preview, index) => {
       return new Promise<void>((resolve) => {
         const img = new Image();
         img.onload = () => {
@@ -77,9 +89,9 @@ export default function ImageSetup() {
 
     // Cleanup: revoke object URLs when component unmounts or files change
     return () => {
-      previews.forEach((preview) => URL.revokeObjectURL(preview.url));
+      filePreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
     };
-  }, [selectedFiles]);
+  }, [selectedFiles, addedUrls]);
 
   const handleResizeImages = async () => {
     try {
@@ -102,7 +114,20 @@ export default function ImageSetup() {
 
   const handleClearImages = () => {
     setSelectedFiles([]);
+    setAddedUrls([]);
     setPreviewImages([]);
+  };
+
+  const handleDeleteImage = (index: number) => {
+    // Determine if this is a file or URL based on index
+    if (index < selectedFiles.length) {
+      // It's a file
+      setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      // It's a URL
+      const urlIndex = index - selectedFiles.length;
+      setAddedUrls((prev) => prev.filter((_, i) => i !== urlIndex));
+    }
   };
 
   return (
@@ -145,6 +170,13 @@ export default function ImageSetup() {
           <div className={styles.previewGrid}>
             {previewImages.map((preview, index) => (
               <div key={preview.url} className={styles.previewItem}>
+                <button
+                  onClick={() => handleDeleteImage(index)}
+                  className={styles.deleteButton}
+                  aria-label="Delete image"
+                >
+                  ×
+                </button>
                 <img
                   src={preview.url}
                   alt={`Preview ${index + 1}`}

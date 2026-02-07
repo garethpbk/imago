@@ -17,6 +17,13 @@
     cursor: pointer;
 }
 
+.uploadContainer.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #ccc;
+    background-color: #e9ecef;
+}
+
 .uploadContainer:hover {
     border-color: #4682b4;
     background-color: #e8f4fd;
@@ -101,12 +108,23 @@
     transition: background-color 0.2s ease;
 }
 
-.urlButton:hover {
+.urlButton:hover:not(:disabled) {
     background-color: #4682b4;
 }
 
-.urlButton:active {
+.urlButton:active:not(:disabled) {
     background-color: #36648b;
+}
+
+.urlButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.urlField:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #e9ecef;
 }
 
 .urlList {

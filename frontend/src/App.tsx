@@ -6,6 +6,7 @@ function App() {
   return (
     <div id="App">
       <Layout>
+        <h1 className="appTitle">ImaGo</h1>
         <ImageSetup />
       </Layout>
     </div>
