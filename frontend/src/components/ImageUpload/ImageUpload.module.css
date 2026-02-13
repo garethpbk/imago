@@ -78,6 +78,7 @@
 
 .urlInputContainer {
     display: flex;
+    align-items: flex-start;
     gap: 8px;
     width: 400px;
 }

@@ -29,6 +29,42 @@ async function convertToBase64({ files }: { files: File[] }) {
   return base64Images;
 }
 
+async function convertUrlsToBase64({ urls }: { urls: string[] }) {
+  const urlPromises = urls.map(async (url) => {
+    // Fetch the image from URL
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch image from ${url}: ${response.statusText}`
+      );
+    }
+
+    // Convert to blob
+    const blob = await response.blob();
+
+    // Convert blob to base64
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (!reader?.result) {
+          return reject(new Error("Failed to read image data"));
+        }
+
+        const base64String = String(reader.result).split(",")[1];
+        resolve(base64String);
+      };
+
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  });
+
+  const base64Images = await Promise.all(urlPromises);
+
+  return base64Images;
+}
+
 interface PreviewImage {
   url: string;
   name: string;
@@ -95,12 +131,17 @@ export default function ImageSetup() {
 
   const handleResizeImages = async () => {
     try {
-      const base64Images = await convertToBase64({ files: selectedFiles });
+      // Convert both files and URLs to base64
+      const fileBase64Images = await convertToBase64({ files: selectedFiles });
+      const urlBase64Images = await convertUrlsToBase64({ urls: addedUrls });
+
+      // Combine both arrays
+      const allBase64Images = [...fileBase64Images, ...urlBase64Images];
 
       const resized = await ResizeImages(
         Number(width),
         Number(height),
-        base64Images
+        allBase64Images
       );
 
       const result = await SaveImages(resized);
