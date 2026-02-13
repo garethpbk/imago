@@ -136,7 +136,7 @@ export default function ImageUpload({
             className={styles.urlButton}
             disabled={hasFiles}
           >
-            Add URL
+            Add URL(s)
           </button>
         </div>
       </div>
