@@ -55,10 +55,18 @@ export default function ImageUpload({
 
   const handleUrlSubmit = () => {
     if (urlInput.trim()) {
-      setAddedUrls((prev) => [...prev, urlInput.trim()]);
-      setUrlInput("");
-      // Clear files when URL is added
-      setSelectedFiles([]);
+      // Split by comma or newline and trim each URL
+      const urls = urlInput
+        .split(/[,\n]/)
+        .map((url) => url.trim())
+        .filter((url) => url.length > 0);
+
+      if (urls.length > 0) {
+        setAddedUrls((prev) => [...prev, ...urls]);
+        setUrlInput("");
+        // Clear files when URLs are added
+        setSelectedFiles([]);
+      }
     }
   };
 
@@ -94,8 +102,8 @@ export default function ImageUpload({
               {selectedFiles.length > 0
                 ? `${selectedFiles.length} image(s) selected`
                 : hasUrls
-                  ? "File upload disabled (using URLs)"
-                  : "Click to upload images"}
+                ? "File upload disabled (using URLs)"
+                : "Click to upload images"}
             </span>
             {!hasUrls && (
               <span className={styles.uploadHint}>or drag and drop</span>
@@ -106,18 +114,22 @@ export default function ImageUpload({
 
       <div className={styles.urlSection}>
         <div className={styles.urlInputContainer}>
-          <input
-            type="url"
+          <textarea
             placeholder={
               hasFiles
                 ? "URL input disabled (using files)"
-                : "Or paste image URL here"
+                : "Or paste image URLs (one per line or comma-separated)"
             }
             className={styles.urlField}
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleUrlSubmit()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                handleUrlSubmit();
+              }
+            }}
             disabled={hasFiles}
+            rows={3}
           />
           <button
             onClick={handleUrlSubmit}
@@ -127,7 +139,6 @@ export default function ImageUpload({
             Add URL
           </button>
         </div>
-
       </div>
     </div>
   );
