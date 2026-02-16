@@ -9,6 +9,8 @@ import (
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
+	"io"
+	"net/http"
 	"os"
 
 	"github.com/disintegration/imaging"
@@ -72,6 +74,39 @@ func (a *App) ResizeImages(width int, height int, quality int, base64Images []st
 	}
 
 	return resizedImages, nil
+}
+
+func (a *App) FetchImages(urls []string) ([]string, error) {
+	var base64Images []string
+
+	client := &http.Client{}
+
+	for i, url := range urls {
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return nil, fmt.Errorf("Error creating request for image %d: %v", i, err)
+		}
+		req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+
+		resp, err := client.Do(req)
+		if err != nil {
+			return nil, fmt.Errorf("Error fetching image %d: %v", i, err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			return nil, fmt.Errorf("Error fetching image %d: status %d", i, resp.StatusCode)
+		}
+
+		data, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, fmt.Errorf("Error reading image %d: %v", i, err)
+		}
+
+		base64Images = append(base64Images, base64.StdEncoding.EncodeToString(data))
+	}
+
+	return base64Images, nil
 }
 
 func (a *App) SaveImages(base64Images []string) (string, error) {
