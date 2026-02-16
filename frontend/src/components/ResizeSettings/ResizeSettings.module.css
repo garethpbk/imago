@@ -42,6 +42,12 @@
   box-shadow: 0 0 0 2px rgba(70, 130, 180, 0.1);
 }
 
+.slider {
+  width: 100%;
+  cursor: pointer;
+  accent-color: steelblue;
+}
+
 .checkboxGroup {
   display: flex;
   align-items: center;

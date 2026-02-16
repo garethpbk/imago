@@ -79,6 +79,7 @@ export default function ImageSetup() {
 
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
+  const [quality, setQuality] = useState(80);
   const [autoScale, setAutoScale] = useState(true);
 
   // Load images and their dimensions when files or URLs change
@@ -141,6 +142,7 @@ export default function ImageSetup() {
       const resized = await ResizeImages(
         Number(width),
         Number(height),
+        quality,
         allBase64Images
       );
 
@@ -187,6 +189,8 @@ export default function ImageSetup() {
             setWidth={setWidth}
             height={height}
             setHeight={setHeight}
+            quality={quality}
+            setQuality={setQuality}
             autoScale={autoScale}
             setAutoScale={setAutoScale}
           />

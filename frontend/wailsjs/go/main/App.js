@@ -6,8 +6,8 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
-export function ResizeImages(arg1, arg2, arg3) {
-  return window['go']['main']['App']['ResizeImages'](arg1, arg2, arg3);
+export function ResizeImages(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['ResizeImages'](arg1, arg2, arg3, arg4);
 }
 
 export function SaveImages(arg1) {

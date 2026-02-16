@@ -5,6 +5,8 @@ interface ResizeSettingsProps {
   setWidth: (value: string) => void;
   height: string;
   setHeight: (value: string) => void;
+  quality: number;
+  setQuality: (value: number) => void;
   autoScale: boolean;
   setAutoScale: (value: boolean) => void;
 }
@@ -14,6 +16,8 @@ export default function ResizeSettings({
   setWidth,
   height,
   setHeight,
+  quality,
+  setQuality,
   autoScale,
   setAutoScale,
 }: ResizeSettingsProps) {
@@ -51,6 +55,21 @@ export default function ResizeSettings({
             className={styles.input}
           />
         </div>
+      </div>
+
+      <div className={styles.inputField}>
+        <label htmlFor="quality" className={styles.label}>
+          Quality ({quality}%)
+        </label>
+        <input
+          id="quality"
+          type="range"
+          min="1"
+          max="100"
+          value={quality}
+          onChange={(e) => setQuality(Number(e.target.value))}
+          className={styles.slider}
+        />
       </div>
 
       <div className={styles.checkboxGroup}>

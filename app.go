@@ -36,7 +36,11 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
-func (a *App) ResizeImages(width int, height int, base64Images []string) ([]string, error) {
+func (a *App) ResizeImages(width int, height int, quality int, base64Images []string) ([]string, error) {
+	if quality < 1 || quality > 100 {
+		quality = 80
+	}
+
 	var resizedImages []string
 
 	for i, base64Img := range base64Images {
@@ -56,7 +60,7 @@ func (a *App) ResizeImages(width int, height int, base64Images []string) ([]stri
 
 		var buf bytes.Buffer
 
-		err = imaging.Encode(&buf, resized, imaging.JPEG)
+		err = imaging.Encode(&buf, resized, imaging.JPEG, imaging.JPEGQuality(quality))
 
 		if err != nil {
 			return nil, fmt.Errorf("Error encoding image %d: %v", i, err)

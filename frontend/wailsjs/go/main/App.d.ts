@@ -3,6 +3,6 @@
 
 export function Greet(arg1:string):Promise<string>;
 
-export function ResizeImages(arg1:number,arg2:number,arg3:Array<string>):Promise<Array<string>>;
+export function ResizeImages(arg1:number,arg2:number,arg3:number,arg4:Array<string>):Promise<Array<string>>;
 
 export function SaveImages(arg1:Array<string>):Promise<string>;
